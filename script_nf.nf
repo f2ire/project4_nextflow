@@ -4,8 +4,8 @@ params.samples = "name1"
 params.bams = 'default.bam'
 params.barecodes = null
 params.gmap = "test.txt.gz" //TO_FIND
-params.snpvcs = "" //TO_FIND
-params.paneldir = "" //TO_FIND
+params.snpvcs = "x" //TO_FIND
+params.paneldir = "x" //TO_FIND
 params.outdir = "/res_default"
 params.ncores = "1"
 params.folder1 = '/chemin/par/defaut/pour/folder1' // Remplacez par un chemin par défaut approprié
@@ -33,12 +33,12 @@ process step1{
     script:
     if (params.help) {
     """
-    Rscript pileup_and_phase.R --help
-    """
+    Rscript ../../../bin/pileup_and_phase.R --help 
+    """//FIND A WAY TO PRINT
     }
     else {
     """
-    Rscript ../../../pileup_and_phase.R --label $params.label --samples $params.samples --bams $params.bams --barcodes $params.barecodes --gmap $params.gmap --snpvcf $params.snpvcs --paneldir $params.paneldir --outdir $params.outdir --ncores $params.ncores
+    Rscript ../../../bin/pileup_and_phase.R --label $params.label --samples $params.samples --bams $params.bams --barcodes $params.barecodes --gmap $params.gmap --snpvcf $params.snpvcs --paneldir $params.paneldir --outdir $params.outdir --ncores $params.ncores
     """}
 }
 
