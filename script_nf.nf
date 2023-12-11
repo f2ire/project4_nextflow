@@ -1,18 +1,21 @@
-// params.input_folder = ""
-// input_ch = channel.from(params.input) 
-params.label = "run"
-params.samples = ""
-params.bams = ""
-params.barecodes = ""
-params.gmap = ""
-params.snpvcs = ""
-params.paneldir = ""
-params.outdir = "."
-params.ncores = ""
+// input_ch  channel.from(params.input) 
+params.label = "run_default"
+params.samples = "name1"
+params.bams = 'default.bam'
+params.barecodes = null
+params.gmap = "test.txt.gz" //TO_FIND
+params.snpvcs = "" //TO_FIND
+params.paneldir = "" //TO_FIND
+params.outdir = "/res_default"
+params.ncores = "1"
+params.folder1 = '/chemin/par/defaut/pour/folder1' // Remplacez par un chemin par défaut approprié
+params.file_bam = '/chemin/par/defaut/pour/file.bam' // Remplacez par un chemin de fichier BAM par défaut
+params.help = null
+
 
 process step1{
-    input: 
-        val label
+    // input: 
+        /*val label
         val samples
         path bams
         path barecodes
@@ -21,18 +24,25 @@ process step1{
         path paneldir
         path outdir
         val ncores
+        */
+    // output:
+    
+    //     path "!{outdir}"
+    // publishDir "index", mode: "copy"
 
-    output:
-        path "${outdir}"
-    publishDir "index", mode: "copy"
-
-    shell:
-    '''
-    pileup_and_phase.R --label !{label} --samples !{samples} --bams !{bams} --barcodes !{barecodes} --gmap !{gmap} --snpvcf !{snpvcs} --paneldir !{paneldir} --outdir !{outdir} --ncores !{ncores}
-    '''
-
+    script:
+    if (params.help) {
+    """
+    Rscript pileup_and_phase.R --help
+    """
+    }
+    else {
+    """
+    Rscript ../../../pileup_and_phase.R --label $params.label --samples $params.samples --bams $params.bams --barcodes $params.barecodes --gmap $params.gmap --snpvcf $params.snpvcs --paneldir $params.paneldir --outdir $params.outdir --ncores $params.ncores
+    """}
 }
 
-workflow {
+workflow{step1()}
+/*workflow {
    step1(params.label, params.samples, params.bams, params.barecodes, params.gmap, params.snpvcs, params.paneldir, params.outdir, params.ncores = "")
-}
+}*/
