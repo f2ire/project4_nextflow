@@ -1,34 +1,22 @@
-// input_ch  channel.from(params.input) 
+#!/usr/bin/env nextflow
+
 params.label = "run_default"
-params.samples = "name1"
-params.bams = 'default.bam'
-params.barecodes = null
-params.gmap = "test.txt.gz" //TO_FIND
-params.snpvcs = "x" //TO_FIND
-params.paneldir = "x" //TO_FIND
-params.outdir = "/res_default"
+params.samples = "run_default"
+params.bams = 'default.bam' //To Modify, and don't forget to put index (.bai) in same directory
+params.barcodes =  "../../../filtered_gene_bc_matrices/hg19/barcodes.tsv" 
+params.gmap = "../../../genetic_map_hg38_withX.txt.gz" 
+params.snpvcs = "../../../genome1K.phase3.SNP_AF5e2.chr1toX.hg38.vcf" 
+params.paneldir = "../../../1000G_hg38"
+params.outdir = "res_default"
 params.ncores = "1"
-params.folder1 = '/chemin/par/defaut/pour/folder1' // Remplacez par un chemin par défaut approprié
-params.file_bam = '/chemin/par/defaut/pour/file.bam' // Remplacez par un chemin de fichier BAM par défaut
+params.matrix = "../../../filtered_gene_bc_matrices/hg19/matrix.mtx" //To modify
 params.help = null
 
-
 process step1{
-    // input: 
-        /*val label
-        val samples
-        path bams
-        path barecodes
-        path gmap
-        path snpvcs
-        path paneldir
-        path outdir
-        val ncores
-        */
-    // output:
-    
-    //     path "!{outdir}"
-    // publishDir "index", mode: "copy"
+
+    output:
+        path "${sample}_allele_counts.tsv.gz"
+    publishDir "${params.outdir}", mode: "copy"
 
     script:
     if (params.help) {
@@ -37,12 +25,30 @@ process step1{
     """//FIND A WAY TO PRINT
     }
     else {
+
     """
-    Rscript ../../../bin/pileup_and_phase.R --label $params.label --samples $params.samples --bams $params.bams --barcodes $params.barecodes --gmap $params.gmap --snpvcf $params.snpvcs --paneldir $params.paneldir --outdir $params.outdir --ncores $params.ncores
-    """}
+    Rscript ../../../bin/pileup_and_phase.R --label $params.label --samples $params.samples --bams $params.bams --barcodes $params.barcodes --gmap $params.gmap --snpvcf $params.snpvcs --paneldir $params.paneldir --outdir $params.outdir --ncores $params.ncores --eagle /home/claire/Eagle_v2.4.1
+    """
+    }
 }
 
-workflow{step1()}
-/*workflow {
-   step1(params.label, params.samples, params.bams, params.barecodes, params.gmap, params.snpvcs, params.paneldir, params.outdir, params.ncores = "")
-}*/
+process step2{
+    input:
+        path step1_output
+
+    output:
+        path "*"
+    publishDir "${params.outdir}", mode: "copy"
+    
+    script:
+    //"""
+    //cp ${step1_output} that_work.tsv.gz
+    //"""
+    """
+    Rscript ../../../bin/nextflowprojet.R ${params.matrix} ${step1_output} ${params.outdir}
+    """
+}
+workflow{
+    output_step1_ch = step1()
+    step2(output_step1_ch)
+    }
