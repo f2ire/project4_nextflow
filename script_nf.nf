@@ -11,6 +11,7 @@ params.outdir = "res_default"
 params.ncores = "1"
 params.matrix = "../../../filtered_gene_bc_matrices/hg19/matrix.mtx" //To modify
 params.help = null
+params.eagle = /home/claire/Eagle_v2.4.1 //To modify
 
 process step1{
 
@@ -27,7 +28,7 @@ process step1{
     else {
 
     """
-    Rscript ../../../bin/pileup_and_phase.R --label $params.label --samples $params.samples --bams $params.bams --barcodes $params.barcodes --gmap $params.gmap --snpvcf $params.snpvcs --paneldir $params.paneldir --outdir $params.outdir --ncores $params.ncores --eagle /home/claire/Eagle_v2.4.1
+    Rscript ../../../bin/pileup_and_phase.R --label $params.label --samples $params.samples --bams $params.bams --barcodes $params.barcodes --gmap $params.gmap --snpvcf $params.snpvcs --paneldir $params.paneldir --outdir $params.outdir --ncores $params.ncores --eagle $params.eagle
     """
     }
 }
