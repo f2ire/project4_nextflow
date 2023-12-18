@@ -11,7 +11,7 @@ params.outdir = "res_default"
 params.ncores = "1"
 params.matrix = "../../../filtered_gene_bc_matrices/hg19/matrix.mtx" //To modify
 params.help = null
-params.eagle = /home/claire/Eagle_v2.4.1 //To modify
+params.eagle = "/home/claire/Eagle_v2.4.1" //To modify
 
 process step1{
 
